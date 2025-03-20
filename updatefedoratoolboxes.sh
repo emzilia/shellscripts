@@ -1,5 +1,5 @@
 #!bin/bash
-#Loops through all podman containers, running dnf update within ones using the fedora image
+#Loops through all podman containers, starting and running dnf update within ones using the fedora image, stopping them afterwards.
 
 for id in $(podman ps -aq); do
     podman start $id
