@@ -6,27 +6,27 @@
 for dir in $HOME/repos/*/; do
   cd "$dir"
   echo "Entering $dir"
+  echo "Changes are being fetched"
   git fetch
-  echo "Changes have been fetched"
   git_results="$(git status)"
   if [[ $(echo "$git_results" | grep "Your branch is behind") ]]; then
     echo "Sending notification: branch is behind"
-    notify-send "$(basename $dir) is behind"
+	notify-send "$(basename $dir) is behind" "le temps de tirer"
   fi
   if [[ $(echo "$git_results" | grep "Your branch is ahead") ]]; then
     echo "Sending notification: branch is ahead"
-    notify-send "$(basename $dir) is ahead"
+	notify-send "$(basename $dir) is ahead" "le temps de pousser"
   fi
   if [[ $(echo "$git_results" | grep "have diverged") ]]; then
     echo "Sending notification: branch has diverged"
-    notify-send "$(basename $dir) has diverged"
+	notify-send "$(basename $dir) has diverged" "oh putain, c'est énervant"
   fi
   if [[ $(echo "$git_results" | grep "Changes to be comm") ]]; then
     echo "Sending notification: pending commits"
-    notify-send "$(basename $dir) has pending commits"
+	notify-send "$(basename $dir) has uncommitted changes" "je devrais le faire bientôt"
   fi
   if [[ $(echo "$git_results" | grep "Changes not staged") ]]; then
     echo "Sending notification: unstaged changes"
-    notify-send "$(basename $dir) has unstaged changes"
+	notify-send "$(basename $dir) has unstaged changes" "qu'est-ce que je faisais?"
   fi
 done
