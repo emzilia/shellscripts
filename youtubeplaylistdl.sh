@@ -1,5 +1,6 @@
 #!/bin/bash
-# This script downloads all the videos from a youtube playlist and converts them to mp3 files
+# This script downloads all the videos from a youtube playlist and
+# converts them to mp3 files
 
 # Check if the url has been provided
 if [ -z "$1" ]; then
@@ -16,7 +17,9 @@ echo "Please allow several minutes for the entire playlist to download"
 
 # Function to perform playlist download
 playlist_download () {
-	youtube-dl -i -x --audio-format mp3 --audio-quality 0 --embed-thumbnail --add-metadata --metadata-from-title "%(artist)s - %(title)s" -o "%(playlist)s/%(playlist_index)s - %(title)s.%(ext)s" $1
+  youtube-dl -i -x --audio-format mp3 --audio-quality 0 --embed-thumbnail \
+    --add-metadata --metadata-from-title "%(artist)s - %(title)s" \
+	-o "%(playlist)s/%(playlist_index)s - %(title)s.%(ext)s" $1
 }
 
 # Download the videos, report success/failure 
@@ -27,4 +30,3 @@ else
 	echo "There was an error downloading the playlist"
 	exit 1
 fi
-
