@@ -13,4 +13,10 @@ for dir in $HOME/repos/*/; do
 	if [[ $(echo "$git_results" | grep "have diverged") ]]; then
 		notify-send "Your branch has diverged: $(basename $dir)" "Intervention required to reconcile changes."
 	fi
+	if [[ $(echo "$git_results" | grep "Changes to be committed:") ]]; then
+		notify-send "Your branch has pending commits: $(basename $dir)" "Changes have been staged and are ready to commit."
+	fi
+	if [[ $(echo "$git_results" | grep "Changes not staged for commit:") ]]; then
+		notify-send "Your branch has unstaged changes: $(basename $dir)" "Changes have been made and are ready to stage."
+	fi
 done
