@@ -2,7 +2,7 @@
 # Switch between network manager connection profiles with dmenu
 
 # list connection profiles
-# TODO: make this work with connection profiles names that contain spaces
+# TODO: make this work with connection profile names that contain spaces
 list="$(nmcli -f NAME c show | awk 'NR>1 {print $1}')"
 
 # profile selected via dmenu
