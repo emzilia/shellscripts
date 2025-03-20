@@ -6,12 +6,13 @@
 for dir in $HOME/repos/*/; do
   cd "$dir"
   echo "Entering $dir"
+  echo "Changes are being fetched"
   git fetch
-  echo "Changes have been fetched"
   git_results="$(git status)"
   if [[ $(echo "$git_results" | grep "Your branch is behind") ]]; then
     echo "Sending notification: branch is behind"
-    notify-send "$(basename $dir) is being merged now"
+    notify-send "$(basename $dir) is being merged now" "oh mon dieu ça arrive"
+    echo "Changes are being merged"
     git merge
   fi
 done
