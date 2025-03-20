@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # Shared, configurable global variables
-drivepath="$HOME/drive"
+drivepath="$HOME/drive/"
 configpath="$HOME/driveconfig/"
 pass="file:secret.key"
 cypher="aes-256-cbc"
@@ -10,7 +10,8 @@ cypher="aes-256-cbc"
 create_archives() {
   cd "$drivepath"
   for file in *; do
-    tar -cvf all_drive_"$file".tar "$file" >/dev/null 2>&1
+    printf "Creating archive %s...\n" "$file"
+    tar -cvf drive_"$file".tar "$file" >/dev/null 2>&1
     if [ "$?" ]; then
       printf "%s archive creation successful\n" "$file"
     else
@@ -25,6 +26,7 @@ encrypt_archives() {
   mkdir -p "$drivepath" 
   mkdir -p "$configpath"
 
+  cd "$configpath"
   if [ ! -f secret.key ]; then
     while [ "$response" != "y" ] && [ "$response" != "n" ]; do
       printf "Error: No encryption key found. Generate a new one now? y/n\n"
@@ -37,16 +39,16 @@ encrypt_archives() {
     fi
   fi
 
-  cd "$configpath"
   if [ ! -f drive_Documents.tar ]; then
-    printf "Drive archive missing, creating now...\n"
+    printf "Drive archives missing, creating them now...\n"
     create_archives
     printf "Archive creation complete\n"
   fi
 
   cd "$configpath"
-  printf "Found archives, beginning encryption...\n"
-  for file in "$configpath"/*.tar; do
+  printf "Found archives, beginning encryption\n"
+  for file in "$configpath"*.tar; do
+    printf "Encrypting %s...\n" "$file"
     openssl "$cypher" -e -v -pbkdf2 -pass "$pass" -in "$file" -out "$file".enc
     if [ -f "$file".enc ]; then
       printf "%s encryption successful\n" "$file"
@@ -80,8 +82,8 @@ decrypt_archives() {
     original_file="${file%.enc}"
     printf "Uploading: /%s" "$file"
     mv "$file" "$drivepath"
-    openssl $cypher -d -v -pbkdf2 -pass $pass -in "$drivepath"/"$file" -out "$drivepath"/"$original_file"
-    tar -xf "$drivepath"/"$original_file" -C "$drivepath"
+    openssl $cypher -d -v -pbkdf2 -pass $pass -in "$drivepath""$file" -out "$drivepath""$original_file"
+    tar -xf "$drivepath""$original_file" -C "$drivepath"
   done
 }
 
@@ -90,9 +92,10 @@ upload_mega() {
   cd "$configpath"
   mega-login "$MEGA_EMAIL" "$MEGA_PW"
   for file in drive_*; do
-    printf "Uploading: /%s" "$file"
-    mega-put "$configpath"/"$file"
+    printf "Uploading: %s\n" "$file"
+    mega-put "$configpath""$file"
     if [ "$?" ]; then
+      printf "File uploaded\n"
       rm "$file"
     fi
   done
