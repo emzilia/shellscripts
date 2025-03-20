@@ -5,7 +5,7 @@
 command="xpointerbarrier"
 
 # Game process to watch for
-process=Fallout4.exe
+process="Fallout4.exe"
 
 # While game's process is running, if xpointerbarrier isn't running, run it
 while pgrep $process >/dev/null; do
