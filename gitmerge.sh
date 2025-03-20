@@ -11,7 +11,7 @@ for dir in $HOME/repos/*/; do
   git_results="$(git status)"
   if [[ $(echo "$git_results" | grep "Your branch is behind") ]]; then
     echo "Sending notification: branch is behind"
-	  notify-send "$(basename $dir) is being merged now"
+    notify-send "$(basename $dir) is being merged now"
     git merge
   fi
 done
