@@ -4,8 +4,8 @@
 image='registry.fedoraproject.org/fedora-toolbox:37'
 
 for id in $(podman ps -aq); do
-    podman start $id
     if [[ $(podman inspect -f '{{.Config.Image}}' $id) == "$image" ]]; then
+    	podman start $id
         podman exec $id sudo dnf update -y
 	podman stop $id
     fi
