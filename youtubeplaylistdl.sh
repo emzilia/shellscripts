@@ -13,20 +13,25 @@ if ! [[ $1 =~ ^https?://(www\.)?youtube\.com/playlist\?list=.*$ ]]; then
   exit 1
 fi
 
-echo "Please allow several minutes for the entire playlist to download"
-
 # Function to perform playlist download
 playlist_download () {
-  youtube-dl -i -x --audio-format mp3 --audio-quality 0 --embed-thumbnail \
+  youtube-dl -i \
+	-x \
+   	--audio-format mp3 \
+   	--audio-quality 0 \
+	--embed-thumbnail \
     --add-metadata --metadata-from-title "%(artist)s - %(title)s" \
-	-o "%(playlist)s/%(playlist_index)s - %(title)s.%(ext)s" $1
+	-o "%(playlist)s/%(playlist_index)s - %(title)s.%(ext)s" \
+   	$1
 }
+
+echo "Please allow several minutes for the entire playlist to download"
 
 # Download the videos, report success/failure 
 if [[ $(playlist_download $1) -eq 0 ]]; then
-	echo "The playlist has been successfully downloaded"
-	exit 0
+  echo "The playlist has been successfully downloaded"
+  exit 0
 else
-	echo "There was an error downloading the playlist"
-	exit 1
+  echo "There was an error downloading the playlist"
+  exit 1
 fi
