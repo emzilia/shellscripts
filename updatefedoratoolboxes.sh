@@ -1,4 +1,4 @@
-#!bin/bash
+#!/bin/bash
 #Loops through all podman containers, starting and running dnf update within the ones using the fedora toolbox image, stopping them afterwards.
 
 image='registry.fedoraproject.org/fedora-toolbox:37'
