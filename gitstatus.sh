@@ -11,11 +11,11 @@ for dir in $HOME/repos/*/; do
 	git_results="$(git status)"
 	if [[ $(echo "$git_results" | grep "Your branch is behind") ]]; then
 		echo "Sending notification: branch is behind"
-		notify-send "$(basename $dir) is behind)"
+		notify-send "$(basename $dir) is behind"
 	fi
 	if [[ $(echo "$git_results" | grep "Your branch is ahead") ]]; then
 		echo "Sending notification: branch is ahead"
-		notify-send "$(basename $dir) is ahead)"
+		notify-send "$(basename $dir) is ahead"
 	fi
 	if [[ $(echo "$git_results" | grep "have diverged") ]]; then
 		echo "Sending notification: branch has diverged"
