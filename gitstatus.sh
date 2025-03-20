@@ -14,17 +14,15 @@ git fetch
 git status
 
 if [ $(git rev-parse HEAD) != $(git rev-parse @{u}) ]; then
-    # Send a notification
     notify-send "There are pending commits from the remote repository: startpage"
 fi
 
-cd $HOME/repos/jspot
+cd $HOME/repos/startpagev2
 git fetch
 git status
 
 
 if [ $(git rev-parse HEAD) != $(git rev-parse @{u}) ]; then
-    # Send a notification
     notify-send "There are pending commits from the remote repository: startpagev2"
 fi
 
@@ -33,7 +31,6 @@ git fetch
 git status
 
 if [ $(git rev-parse HEAD) != $(git rev-parse @{u}) ]; then
-    # Send a notification
     notify-send "There are pending commits from the remote repository: tagalogpy"
 fi
 
@@ -42,6 +39,5 @@ git fetch
 git status
 
 if [ $(git rev-parse HEAD) != $(git rev-parse @{u}) ]; then
-    # Send a notification
     notify-send "There are pending commits from the remote repository: bashscripts"
 fi
