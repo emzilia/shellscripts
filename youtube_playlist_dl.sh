@@ -15,7 +15,7 @@ fi
 
 # Function to perform playlist download
 playlist_download () {
-  youtube-dl -i \
+  yt-dlp -i \
     -x \
     --audio-format mp3 \
     --audio-quality 0 \
