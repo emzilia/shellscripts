@@ -4,6 +4,6 @@ for d in $HOME/repos/*/; do
 	cd "$d"
 	git fetch
 	if [[ $(git status | grep "Your branch is behind") ]]; then
-		notify-send "There are pending changes to a remote repository: $(basename $d)"
+		notify-send "A remote repository has been updated: $(basename $d)"
 	fi
 done
