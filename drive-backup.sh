@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Shared, configurable global variables
+# Configurable global variables
 drivepath="$HOME/drive/"
 configpath="$HOME/driveconfig/"
 pass="file:secret.key"
@@ -87,26 +87,24 @@ decrypt_archives() {
   done
 }
 
-# Uploads all of the encrypted tar archives to MEGA, env variables are used to login
-upload_mega() {
+# Uploads all of the encrypted tar archives to a B2 bucket, env variables are used to indicate bucket name
+upload_b2() {
   cd "$configpath"
-  mega-login "$MEGA_EMAIL" "$MEGA_PW"
   for file in drive_*; do
     printf "Uploading: %s\n" "$file"
-    mega-put "$configpath""$file"
+    rclone sync "$configpath""$file" remote:"$B2BUCKET"/
     if [ "$?" ]; then
       printf "File uploaded\n"
-      rm "$file"
+    else
+      printf "Error: File not uploaded -- skipping\n"
     fi
   done
-  mega-logout
-  exit
 }
 
 # Generates a new key to encrypt the archives with
 generate_key() {
   local length="32"
-  dir="$(pwd)"
+  local dir="$(pwd)"
 
   if [ -f secret.key ]; then
     while [ "$response" != "y" ] && [ "$response" != "n" ]; do
@@ -145,7 +143,7 @@ main() {
       generate_key ;;
     "-e")
       encrypt_archives
-      upload_mega ;;
+      upload_b2 ;;
     *)
       print_help ;;
   esac
