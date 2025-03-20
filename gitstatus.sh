@@ -1,5 +1,5 @@
 #!/bin/bash
-# Loops through all folders in the repos directory, running git fetch and git status and sending a notification if there are pending changes.
+# Loops through all folders in the $HOME/repos directory, running git fetch and saving the result of git status to a variable, which is then read and a notification is sent based on the git repo's status.
 for dir in $HOME/repos/*/; do
 	cd "$dir"
 	git fetch
