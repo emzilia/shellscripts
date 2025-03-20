@@ -4,7 +4,6 @@
 # Check if the url has been provided
 if [ -z "$1" ]; then
   echo "Please provide a url"
-  exit 1
 fi
 
 # Check if the url is valid
@@ -13,14 +12,17 @@ if ! [[ $1 =~ ^https?://(www\.)?youtube\.com/playlist\?list=.*$ ]]; then
   exit 1
 fi
 
-# Download the videos
-youtube-dl -i -x --audio-format mp3 --audio-quality 0 --embed-thumbnail --add-metadata --metadata-from-title "%(artist)s - %(title)s" -o "%(playlist)s/%(playlist_index)s - %(title)s.%(ext)s" $1
+# Function do perform playlist download
+playlist_download() {
+	youtube-dl -i -x --audio-format mp3 --audio-quality 0 --embed-thumbnail --add-metadata --metadata-from-title "%(artist)s - %(title)s" -o "%(playlist)s/%(playlist_index)s - %(title)s.%(ext)s" $1
+}
 
-# Check if the download was successful
-if [ $? -ne 0 ]; then
-  echo "There was an error downloading the videos"
-  exit 1
+# Download the videos, report success/failure 
+if [playlist_download() -eq 0]; then
+	echo "The files were downloaded successfully"
+	exit 0
+else
+	echo "There was an error downloading the playlist"
+	exit 1
 fi
 
-echo "The files were downloaded successfully"
-exit 0
