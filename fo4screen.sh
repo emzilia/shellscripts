@@ -1,16 +1,20 @@
 #!/usr/bin/env bash
 
-# Runs xrandr --listactivemonitors and captures the number of actives monitors, 1 or 2
+# Captures the names of primary and secondary monitors
+primarymonitor=$(xrandr --listactivemonitors | awk '/0:/{print $4}')
+secondarymonitor=$(xrandr --listactivemonitors | awk '/1:/{print $4}')
+
+# Captures the number of actives monitors, 1 or 2
 xrandrcheck () {
 	local result=$(xrandr --listactivemonitors | awk '/Monitors:/{print $2}')
 	echo "$result"
 }
 
 # Disables secondary monitor
-xrandroff="xrandr --output DVI-D-0 --off"
+xrandroff="xrandr --output $secondarymonitor --off"
 
 # Re-enables secondary monitor and places it back in its spot
-xrandreset="xrandr --output DVI-D-0 --auto --left-of DP-0"
+xrandreset="xrandr --output $secondarymonitor --auto --left-of $primarymonitor"
 
 # Runs script to restart polybar
 resetbar="~/.config/polybar/launch.sh"
