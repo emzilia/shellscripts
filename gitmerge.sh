@@ -8,7 +8,7 @@ for dir in $HOME/repos/*/; do
 	git_results="$(git status)"
 	if [[ $(echo "$git_results" | grep "Your branch is behind") ]]; then
 		echo "Sending notification: branch is behind"
-		notify-send "Branch is behind: $(basename $dir)" "Changes have been fetched and are ready to merge."
-		git pull --rebase
+		notify-send "Branch is behind: $(basename $dir)" "Changes are being merged now"
+		git merge
 	fi
 done
