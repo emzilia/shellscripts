@@ -5,8 +5,8 @@
 
 for dir in $HOME/repos/*/; do
   echo "Changes are being fetched from $dir"
-  git -C $dir fetch
-  git_results="$(git -C $dir status)"
+  git -C $dir fetch &
+  git_results="$(git -C $dir status &)"
   if [[ $(echo "$git_results" | grep "Your branch is behind") ]]; then
     echo "Sending notification: branch is behind"
 	notify-send "$(basename $dir) is behind" "le temps de tirer"
