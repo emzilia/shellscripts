@@ -4,11 +4,9 @@
 # notification is sent based on the git repo's status.
 
 for dir in $HOME/repos/*/; do
-  cd "$dir"
-  echo "Entering $dir"
-  echo "Changes are being fetched"
+  echo "Changes are being fetched from $dir"
   git fetch
-  git_results="$(git status)"
+  git_results="$(git -C $dir status)"
   if [[ $(echo "$git_results" | grep "Your branch is behind") ]]; then
     echo "Sending notification: branch is behind"
 	notify-send "$(basename $dir) is behind" "le temps de tirer"
