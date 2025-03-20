@@ -4,15 +4,13 @@
 # is then read and a notification is sent based on the git repo's status.
 
 for dir in $HOME/repos/*/; do
-  cd "$dir"
-  echo "Entering $dir"
-  echo "Changes are being fetched"
-  git fetch
-  git_results="$(git status)"
+  echo "Changes are being fetched from $dir"
+  git -C $dir fetch
+  git_results="$(git -C $dir status)"
   if [[ $(echo "$git_results" | grep "Your branch is behind") ]]; then
     echo "Sending notification: branch is behind"
     notify-send "$(basename $dir) is being merged now" "oh mon dieu ça arrive"
     echo "Changes are being merged"
-    git merge
+    git -C $dir merge
   fi
 done
