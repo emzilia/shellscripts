@@ -11,7 +11,7 @@ while [ 1 ]; do
       fi
       ;;
     "0")
-     if ! pgrep -l swayidle; then
+     if ! pgrep -l swayidle >/dev/null; then
        swayidle -w &
        printf "Power Check: AC connection terminated, restarting screen idle\n"
      fi
