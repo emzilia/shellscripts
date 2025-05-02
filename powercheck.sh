@@ -10,7 +10,7 @@ while true; do
         printf "Power Check: AC connection established, ending screen idle\n" 
       fi ;;
     "0")
-     if ! pgrep swayidle >/dev/null; then
+     if ! pgrep -x swayidle >/dev/null; then
        swayidle -w &
        printf "Power Check: AC connection terminated, restarting screen idle\n"
      fi ;;
