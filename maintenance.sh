@@ -11,7 +11,7 @@ fi
 
 # Prints the system uptime when it's been up for at least 3 days
 uptime_epoch="$(uptime -r | awk '{print $2}' | sed 's/[.].*//')"
-day_epoch=259200
+day_epoch=86400
 threedays_epoch=259200
 if [ $(("$uptime_epoch")) -ge $(("$threedays_epoch")) ]; then
   uptime_days="$(("$uptime_epoch"/"$day_epoch"))"
