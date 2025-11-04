@@ -3,7 +3,7 @@
 # Configurable global variables
 drivepath="$HOME/drive/"
 configpath="$HOME/driveconfig/"
-pass="file:secret.key"
+pass="file:"$configpath"secret.key"
 cypher="aes-256-cbc"
 
 # Creates tar archives of all folders within the drive folder
@@ -14,17 +14,18 @@ create_archives() {
     tar -cvf drive_"$file".tar "$file" >/dev/null 2>&1
     if [ "$?" ]; then
       printf "%s archive creation successful\n" "$file"
+      mv drive_* "$configpath"tmp
     else
       printf "%s archive creation failure, skipping\n" "$file"
     fi
   done
-  mv drive_* "$configpath"
 }
 
 # Encrypts all of the tar archives, creating them if they're missing
 encrypt_archives() {
   mkdir -p "$drivepath" 
   mkdir -p "$configpath"
+  mkdir -p "$configpath"tmp
 
   cd "$configpath"
   if [ ! -f secret.key ]; then
@@ -39,15 +40,16 @@ encrypt_archives() {
     fi
   fi
 
+  cd "$configpath"tmp
+
   if [ ! -f drive_Documents.tar ]; then
     printf "Drive archives missing, creating them now...\n"
     create_archives
     printf "Archive creation complete\n"
   fi
 
-  cd "$configpath"
   printf "Found archives, beginning encryption\n"
-  for file in "$configpath"*.tar; do
+  for file in "$configpath"tmp/*.tar; do
     printf "Encrypting %s...\n" "$file"
     openssl "$cypher" -e -v -pbkdf2 -pass "$pass" -in "$file" -out "$file".enc
     if [ -f "$file".enc ]; then
@@ -80,7 +82,7 @@ decrypt_archives() {
 
   for file in drive_*; do
     original_file="${file%.enc}"
-    printf "Uploading: /%s" "$file"
+    printf "Decrypting: /%s" "$file"
     mv "$file" "$drivepath"
     openssl $cypher -d -v -pbkdf2 -pass $pass -in "$drivepath""$file" -out "$drivepath""$original_file"
     tar -xf "$drivepath""$original_file" -C "$drivepath"
@@ -89,16 +91,13 @@ decrypt_archives() {
 
 # Uploads all of the encrypted tar archives to a B2 bucket, env variables are used to indicate bucket name
 upload_b2() {
-  cd "$configpath"
-  for file in drive_*; do
-    printf "Uploading: %s\n" "$file"
-    rclone sync "$configpath""$file" remote:"$B2BUCKET"/
-    if [ "$?" ]; then
-      printf "File uploaded\n"
-    else
-      printf "Error: File not uploaded -- skipping\n"
-    fi
-  done
+  printf "Syncing encrypted drive now..."
+  rclone sync -P "$configpath"tmp remote:"$B2BUCKET"/
+  if [ "$?" ]; then
+    printf "Drive sync success!\n"
+  else
+    printf "Error: Drive sync unsuccessful\n"
+  fi
 }
 
 # Generates a new key to encrypt the archives with
