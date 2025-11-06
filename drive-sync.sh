@@ -5,7 +5,7 @@ operand="$1"
 case "$operand" in
   "-p"|"--pull")
     printf "Pulling drive now...\n"
-    rclone sync -P ssh:drive "$HOME"/drive
+    rclone sync -u -P ssh:drive "$HOME"/drive -u -P
     if [ "$?" ]; then
       printf "Drive sync complete\n"
     else
@@ -14,7 +14,7 @@ case "$operand" in
     fi ;;
   "-P"|"--push")
     printf "Pushing drive now...\n"
-    rclone sync -P "$HOME"/drive ssh:drive
+    rclone sync "$HOME"/drive ssh:drive -u -P
     if [ "$?" ]; then
       printf "Drive sync complete\n"
     else
