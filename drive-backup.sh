@@ -1,8 +1,8 @@
 #!/bin/sh
 
 # Configurable global variables
-drivepath="$HOME/drive/"
-configpath="$HOME/driveconfig/"
+drivepath="$HOME/drive"
+configpath="$HOME/driveconfig"
 pass="file:"$configpath"secret.key"
 cypher="aes-256-cbc"
 
@@ -14,7 +14,7 @@ create_archives() {
     tar -cvf drive_"$file".tar "$file" >/dev/null 2>&1
     if [ "$?" ]; then
       printf "%s archive creation successful\n" "$file"
-      mv drive_* "$configpath"tmp
+      mv drive_* "$configpath"/tmp
     else
       printf "%s archive creation failure, skipping\n" "$file"
     fi
@@ -25,7 +25,7 @@ create_archives() {
 encrypt_archives() {
   mkdir -p "$drivepath" 
   mkdir -p "$configpath"
-  mkdir -p "$configpath"tmp
+  mkdir -p "$configpath"/tmp
 
   cd "$configpath"
   if [ ! -f secret.key ]; then
@@ -40,7 +40,7 @@ encrypt_archives() {
     fi
   fi
 
-  cd "$configpath"tmp
+  cd "$configpath"/tmp
 
   if [ ! -f drive_Documents.tar ]; then
     printf "Drive archives missing, creating them now...\n"
@@ -49,7 +49,7 @@ encrypt_archives() {
   fi
 
   printf "Found archives, beginning encryption\n"
-  for file in "$configpath"tmp/*.tar; do
+  for file in "$configpath"/tmp/*.tar; do
     printf "Encrypting %s...\n" "$file"
     openssl "$cypher" -e -v -pbkdf2 -pass "$pass" -in "$file" -out "$file".enc
     if [ -f "$file".enc ]; then
@@ -84,15 +84,15 @@ decrypt_archives() {
     original_file="${file%.enc}"
     printf "Decrypting: /%s" "$file"
     mv "$file" "$drivepath"
-    openssl $cypher -d -v -pbkdf2 -pass $pass -in "$drivepath""$file" -out "$drivepath""$original_file"
-    tar -xf "$drivepath""$original_file" -C "$drivepath"
+    openssl $cypher -d -v -pbkdf2 -pass $pass -in "$drivepath"/"$file" -out "$drivepath"/"$original_file"
+    tar -xf "$drivepath"/"$original_file" -C "$drivepath"
   done
 }
 
 # Uploads all of the encrypted tar archives to a B2 bucket, env variables are used to indicate bucket name
 upload_b2() {
   printf "Syncing encrypted drive now..."
-  rclone sync -P "$configpath"tmp remote:"$B2BUCKET"/
+  rclone sync -P "$configpath"/tmp remote:"$B2BUCKET"/
   if [ "$?" ]; then
     printf "Drive sync success!\n"
   else
